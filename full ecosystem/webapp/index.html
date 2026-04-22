@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JARVIS</title>
+
+<style>
+body {
+    background: black;
+    color: cyan;
+    text-align: center;
+    font-family: Arial;
+}
+button {
+    padding: 15px;
+    margin: 10px;
+    font-size: 18px;
+    background: #111;
+    color: cyan;
+    border: 1px solid cyan;
+}
+</style>
+</head>
+
+<body>
+
+<h1>JARVIS</h1>
+
+<button onclick="startVoice()">🎤 Speak</button>
+
+<p id="response">Ready...</p>
+
+<script>
+const SERVER = "https://your-render-url.onrender.com";
+
+function send(cmd){
+    fetch(SERVER + "/command?cmd=" + encodeURIComponent(cmd))
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("response").innerText = data;
+        speak(data);
+    });
+}
+
+function startVoice(){
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-IN';
+
+    recognition.onresult = function(event){
+        send(event.results[0][0].transcript);
+    };
+
+    recognition.start();
+}
+
+function speak(text){
+    let speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-IN";
+    speechSynthesis.speak(speech);
+}
+</script>
+
+</body>
+</html>
